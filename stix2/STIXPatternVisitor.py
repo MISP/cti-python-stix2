@@ -1,5 +1,4 @@
 import stix2
-from antlr4 import *
 import six
 from stix2patterns.grammars.STIXPatternParser import *
 from stix2patterns.grammars.STIXPatternVisitor import STIXPatternVisitor
@@ -21,6 +20,7 @@ def collapse_lists(lists):
     return result
 
 # This class defines a complete generic visitor for a parse tree produced by STIXPatternParser.
+
 
 class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
     classes = {}
@@ -49,7 +49,6 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         children = self.visitChildren(ctx)
         return children[0]
 
-
     # Visit a parse tree produced by STIXPatternParser#observationExpressions.
     def visitObservationExpressions(self, ctx):
         children = self.visitChildren(ctx)
@@ -66,7 +65,6 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         else:
             return self.instantiate("OrObservationExpression", [children[0], children[2]])
 
-
     # Visit a parse tree produced by STIXPatternParser#observationExpressionAnd.
     def visitObservationExpressionAnd(self, ctx):
         children = self.visitChildren(ctx)
@@ -75,36 +73,30 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         else:
             return self.instantiate("AndObservationExpression", [children[0], children[2]])
 
-
     # Visit a parse tree produced by STIXPatternParser#observationExpressionRepeated.
     def visitObservationExpressionRepeated(self, ctx):
         children = self.visitChildren(ctx)
         return self.instantiate("QualifiedObservationExpression", children[0], children[1])
-
 
     # Visit a parse tree produced by STIXPatternParser#observationExpressionSimple.
     def visitObservationExpressionSimple(self, ctx):
         children = self.visitChildren(ctx)
         return self.instantiate("ObservationExpression", children[1])
 
-
     # Visit a parse tree produced by STIXPatternParser#observationExpressionCompound.
     def visitObservationExpressionCompound(self, ctx):
         children = self.visitChildren(ctx)
         return self.instantiate("ObservationExpression", children[1])
-
 
     # Visit a parse tree produced by STIXPatternParser#observationExpressionWithin.
     def visitObservationExpressionWithin(self, ctx):
         children = self.visitChildren(ctx)
         return self.instantiate("QualifiedObservationExpression", children[0], children[1])
 
-
     # Visit a parse tree produced by STIXPatternParser#observationExpressionStartStop.
     def visitObservationExpressionStartStop(self, ctx):
         children = self.visitChildren(ctx)
         return self.instantiate("QualifiedObservationExpression", children[0], children[1])
-
 
     # Visit a parse tree produced by STIXPatternParser#comparisonExpression.
     def visitComparisonExpression(self, ctx):
@@ -113,7 +105,6 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
             return children[0]
         else:
             return self.instantiate("OrBooleanExpression", [children[0], children[2]])
-
 
     # Visit a parse tree produced by STIXPatternParser#comparisonExpressionAnd.
     def visitComparisonExpressionAnd(self, ctx):
@@ -124,19 +115,17 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         else:
             return self.instantiate("AndBooleanExpression", [children[0], children[2]])
 
-
     # Visit a parse tree produced by STIXPatternParser#propTestEqual.
     def visitPropTestEqual(self, ctx):
         children = self.visitChildren(ctx)
         if len(children) == 4:
             operator = children[2].symbol.type
-            negated = negated=operator == STIXPatternParser.EQ
+            negated = negated = operator == STIXPatternParser.EQ
             return self.instantiate("EqualityComparisonExpression", children[0], children[3], negated)
         else:
             operator = children[1].symbol.type
             negated = negated = operator != STIXPatternParser.EQ
             return self.instantiate("EqualityComparisonExpression", children[0], children[2], negated)
-
 
     # Visit a parse tree produced by STIXPatternParser#propTestOrder.
     def visitPropTestOrder(self, ctx):
@@ -151,60 +140,50 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         elif operator == STIXPatternParser.LE:
             return self.instantiate("LessThanEqualComparisonExpression", children[0], children[2], False)
 
-
     # Visit a parse tree produced by STIXPatternParser#propTestSet.
     def visitPropTestSet(self, ctx):
         # TODO
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by STIXPatternParser#propTestLike.
     def visitPropTestLike(self, ctx):
         children = self.visitChildren(ctx)
         return self.instantiate("LikeComparisonExpression", children[0], children[2], False)
 
-
     # Visit a parse tree produced by STIXPatternParser#propTestRegex.
     def visitPropTestRegex(self, ctx):
         children = self.visitChildren(ctx)
         return self.instantiate("MatchesComparisonExpression", children[0], children[2], False)
-
 
     # Visit a parse tree produced by STIXPatternParser#propTestIsSubset.
     def visitPropTestIsSubset(self, ctx):
         children = self.visitChildren(ctx)
         return stix2.IsSubsetComparisonExpression(children[0], children[2])
 
-
     # Visit a parse tree produced by STIXPatternParser#propTestIsSuperset.
     def visitPropTestIsSuperset(self, ctx):
         children = self.visitChildren(ctx)
         return stix2.IsSupersetComparisonExpression(children[0], children[2])
-
 
     # Visit a parse tree produced by STIXPatternParser#propTestParen.
     def visitPropTestParen(self, ctx):
         children = self.visitChildren(ctx)
         return self.instantiate("ParentheticalExpression", children[1])
 
-
     # Visit a parse tree produced by STIXPatternParser#startStopQualifier.
     def visitStartStopQualifier(self, ctx):
         children = self.visitChildren(ctx)
         return stix2.StartStopQualifier(children[1], children[3])
-
 
     # Visit a parse tree produced by STIXPatternParser#withinQualifier.
     def visitWithinQualifier(self, ctx):
         children = self.visitChildren(ctx)
         return stix2.WithinQualifier(children[1])
 
-
     # Visit a parse tree produced by STIXPatternParser#repeatedQualifier.
     def visitRepeatedQualifier(self, ctx):
         children = self.visitChildren(ctx)
         return stix2.RepeatQualifier(children[1])
-
 
     # Visit a parse tree produced by STIXPatternParser#objectPath.
     def visitObjectPath(self, ctx):
@@ -226,12 +205,10 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
                 i += 1
         return self.instantiate("ObjectPath", children[0].getText(), property_path)
 
-
     # Visit a parse tree produced by STIXPatternParser#objectType.
     def visitObjectType(self, ctx):
         children = self.visitChildren(ctx)
         return children[0]
-
 
     # Visit a parse tree produced by STIXPatternParser#firstPathComponent.
     def visitFirstPathComponent(self, ctx):
@@ -242,17 +219,14 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         # else:
         return stix2.BasicObjectPathComponent(step)
 
-
     # Visit a parse tree produced by STIXPatternParser#indexPathStep.
     def visitIndexPathStep(self, ctx):
         children = self.visitChildren(ctx)
         return children[1]
 
-
     # Visit a parse tree produced by STIXPatternParser#pathStep.
     def visitPathStep(self, ctx):
         return collapse_lists(self.visitChildren(ctx))
-
 
     # Visit a parse tree produced by STIXPatternParser#keyPathStep.
     def visitKeyPathStep(self, ctx):
@@ -263,24 +237,19 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         else:
             return stix2.BasicObjectPathComponent(children[1].getText(), is_key=True)
 
-
-
     # Visit a parse tree produced by STIXPatternParser#setLiteral.
     def visitSetLiteral(self, ctx):
         return self.visitChildren(ctx)
-
 
     # Visit a parse tree produced by STIXPatternParser#primitiveLiteral.
     def visitPrimitiveLiteral(self, ctx):
         children = self.visitChildren(ctx)
         return children[0]
 
-
     # Visit a parse tree produced by STIXPatternParser#orderableLiteral.
     def visitOrderableLiteral(self, ctx):
         children = self.visitChildren(ctx)
         return children[0]
-
 
     def visitTerminal(self, node):
         if node.symbol.type == STIXPatternParser.IntPosLiteral or node.symbol.type == STIXPatternParser.IntNegLiteral:
