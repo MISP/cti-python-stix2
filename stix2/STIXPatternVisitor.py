@@ -8,7 +8,22 @@ from stix2patterns.validator import STIXPatternErrorListener
 import importlib
 import inspect
 
-from .patterns import *
+from .patterns import (FollowedByObservationExpression,
+                       IsSubsetComparisonExpression,
+                       IsSupersetComparisonExpression,
+                       StartStopQualifier,
+                       WithinQualifier,
+                       RepeatQualifier,
+                       BasicObjectPathComponent,
+                       StringConstant,
+                       IntegerConstant,
+                       FloatConstant,
+                       HexConstant,
+                       BinaryConstant,
+                       BooleanConstant,
+                       TimestampConstant
+)
+
 
 def collapse_lists(lists):
     result = []
@@ -18,6 +33,7 @@ def collapse_lists(lists):
         else:
             result.append(c)
     return result
+
 
 def quote_if_needed(x):
     if x.find("-") != -1:

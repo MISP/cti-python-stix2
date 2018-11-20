@@ -5,7 +5,6 @@ import pytest
 import stix2
 
 def test_create_comparison_expression():
-
     exp = stix2.EqualityComparisonExpression("file:hashes.'SHA-256'",
                                              stix2.HashConstant("aec070645fe53ee3b3763059376134f058cc337247c978add178b6ccdfb0019f", "SHA-256"))   # noqa
 
@@ -381,5 +380,3 @@ def test_make_constant_already_a_constant():
 def test_parsing_expression():
     patt_obj = stix2.create_pattern_object("[file:hashes.'SHA-256' = 'aec070645fe53ee3b3763059376134f058cc337247c978add178b6ccdfb0019f']")
     assert str(patt_obj) == "[file:hashes.'SHA-256' = 'aec070645fe53ee3b3763059376134f058cc337247c978add178b6ccdfb0019f']"
-
-
