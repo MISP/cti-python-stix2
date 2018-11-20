@@ -1,28 +1,23 @@
-import six
-from stix2patterns.grammars.STIXPatternParser import TerminalNode
-from stix2patterns.grammars.STIXPatternVisitor import STIXPatternVisitor
-from antlr4 import CommonTokenStream, InputStream
-from stix2patterns.grammars.STIXPatternLexer import STIXPatternLexer
-from stix2patterns.grammars.STIXPatternParser import STIXPatternParser
-from stix2patterns.validator import STIXPatternErrorListener
 import importlib
 import inspect
 
-from .patterns import (FollowedByObservationExpression,
-                       IsSubsetComparisonExpression,
-                       IsSupersetComparisonExpression,
-                       StartStopQualifier,
-                       WithinQualifier,
-                       RepeatQualifier,
-                       BasicObjectPathComponent,
-                       ListObjectPathComponent,
-                       StringConstant,
-                       IntegerConstant,
-                       FloatConstant,
-                       HexConstant,
-                       BinaryConstant,
-                       BooleanConstant,
-                       TimestampConstant)
+import six
+from stix2patterns.grammars.STIXPatternLexer import STIXPatternLexer
+from stix2patterns.grammars.STIXPatternParser import (
+    STIXPatternParser, TerminalNode,
+)
+from stix2patterns.grammars.STIXPatternVisitor import STIXPatternVisitor
+from stix2patterns.validator import STIXPatternErrorListener
+
+from antlr4 import CommonTokenStream, InputStream
+
+from .patterns import (
+    BasicObjectPathComponent, BinaryConstant, BooleanConstant, FloatConstant,
+    FollowedByObservationExpression, HexConstant, IntegerConstant,
+    IsSubsetComparisonExpression, IsSupersetComparisonExpression,
+    ListObjectPathComponent, RepeatQualifier, StartStopQualifier,
+    StringConstant, TimestampConstant, WithinQualifier,
+)
 
 
 def collapse_lists(lists):
