@@ -1,5 +1,5 @@
 import six
-from stix2patterns.grammars.STIXPatternParser import *
+from stix2patterns.grammars.STIXPatternParser import TerminalNode
 from stix2patterns.grammars.STIXPatternVisitor import STIXPatternVisitor
 from antlr4 import CommonTokenStream, InputStream
 from stix2patterns.grammars.STIXPatternLexer import STIXPatternLexer
@@ -15,14 +15,14 @@ from .patterns import (FollowedByObservationExpression,
                        WithinQualifier,
                        RepeatQualifier,
                        BasicObjectPathComponent,
+                       ListObjectPathComponent,
                        StringConstant,
                        IntegerConstant,
                        FloatConstant,
                        HexConstant,
                        BinaryConstant,
                        BooleanConstant,
-                       TimestampConstant
-)
+                       TimestampConstant)
 
 
 def collapse_lists(lists):

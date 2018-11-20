@@ -4,6 +4,7 @@ import pytest
 
 import stix2
 
+
 def test_create_comparison_expression():
     exp = stix2.EqualityComparisonExpression("file:hashes.'SHA-256'",
                                              stix2.HashConstant("aec070645fe53ee3b3763059376134f058cc337247c978add178b6ccdfb0019f", "SHA-256"))   # noqa
