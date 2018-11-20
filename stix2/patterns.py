@@ -12,7 +12,6 @@ from .utils import parse_into_datetime
 def escape_quotes_and_backslashes(s):
     return s.replace(u'\\', u'\\\\').replace(u"'", u"\\'")
 
-
 class _Constant(object):
     pass
 
