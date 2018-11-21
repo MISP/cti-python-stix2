@@ -13,6 +13,14 @@ def escape_quotes_and_backslashes(s):
     return s.replace(u'\\', u'\\\\').replace(u"'", u"\\'")
 
 
+def quote_if_needed(x):
+    if isinstance(x, str):
+        if x.find("-") != -1:
+            if not x.startswith("'"):
+                return "'" + x + "'"
+    return x
+
+
 class _Constant(object):
     pass
 
@@ -229,7 +237,10 @@ class _ObjectPathComponent(object):
             parse1 = component_name.split("[")
             return ListObjectPathComponent(parse1[0], parse1[1][:-1])
         else:
-            return BasicObjectPathComponent(component_name)
+            return BasicObjectPathComponent(component_name, False)
+
+    def __str__(self):
+        return quote_if_needed(self.property_name)
 
 
 class BasicObjectPathComponent(_ObjectPathComponent):
@@ -243,13 +254,10 @@ class BasicObjectPathComponent(_ObjectPathComponent):
         property_name (str): object property name
         is_key (bool): is dictionary key, default: False
     """
-    def __init__(self, property_name, is_key=False):
+    def __init__(self, property_name, is_key):
         self.property_name = property_name
         # TODO: set is_key to True if this component is a dictionary key
         # self.is_key = is_key
-
-    def __str__(self):
-        return self.property_name
 
 
 class ListObjectPathComponent(_ObjectPathComponent):
@@ -264,7 +272,7 @@ class ListObjectPathComponent(_ObjectPathComponent):
         self.index = index
 
     def __str__(self):
-        return "%s[%s]" % (self.property_name, self.index)
+        return "%s[%s]" % (quote_if_needed(self.property_name), self.index)
 
 
 class ReferenceObjectPathComponent(_ObjectPathComponent):
@@ -275,9 +283,6 @@ class ReferenceObjectPathComponent(_ObjectPathComponent):
     """
     def __init__(self, reference_property_name):
         self.property_name = reference_property_name
-
-    def __str__(self):
-        return self.property_name
 
 
 class ObjectPath(object):
@@ -296,7 +301,7 @@ class ObjectPath(object):
         ]
 
     def __str__(self):
-        return "%s:%s" % (self.object_type_name, ".".join(["%s" % x for x in self.property_path]))
+        return "%s:%s" % (self.object_type_name, ".".join(["%s" % quote_if_needed(x) for x in self.property_path]))
 
     def merge(self, other):
         """Extend the object property with that of the supplied object property path"""

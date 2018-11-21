@@ -11,14 +11,8 @@ from stix2patterns.validator import STIXPatternErrorListener
 
 from antlr4 import CommonTokenStream, InputStream
 
-from .patterns import (
-    BasicObjectPathComponent, BinaryConstant, BooleanConstant, FloatConstant,
-    FollowedByObservationExpression, HexConstant, IntegerConstant,
-    IsSubsetComparisonExpression, IsSupersetComparisonExpression,
-    ListObjectPathComponent, RepeatQualifier, StartStopQualifier,
-    StringConstant, TimestampConstant, WithinQualifier,
-)
-
+# need to import all classes because we need to access them via globals()
+from .patterns import *
 
 def collapse_lists(lists):
     result = []
@@ -30,11 +24,7 @@ def collapse_lists(lists):
     return result
 
 
-def quote_if_needed(x):
-    if x.find("-") != -1:
-        return "'" + x + "'"
-    else:
-        return x
+
 
 # This class defines a complete generic visitor for a parse tree produced by STIXPatternParser.
 
@@ -54,12 +44,16 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         super(STIXPatternVisitor, self).__init__()
 
     def get_class(self, class_name):
-        return STIXPatternVisitorForSTIX2.classes[class_name]
+        if class_name in STIXPatternVisitorForSTIX2.classes:
+            return STIXPatternVisitorForSTIX2.classes[class_name]
+        else:
+            return None
 
     def instantiate(self, klass_name, *args):
+        klass_to_instantiate = None
         if self.module_suffix:
             klass_to_instantiate = self.get_class(klass_name + "For" + self.module_suffix)
-        else:
+        if not klass_to_instantiate:
             # use the classes in python_stix2
             klass_to_instantiate = globals()[klass_name]
         return klass_to_instantiate(*args)
@@ -214,11 +208,11 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         while i < len(flat_list):
             current = flat_list[i]
             if i == len(flat_list)-1:
-                property_path.append(quote_if_needed(current))
+                property_path.append(current)
                 break
             next = flat_list[i+1]
             if isinstance(next, TerminalNode):
-                property_path.append(ListObjectPathComponent(current.property_name, next.getText()))
+                property_path.append(self.instantiate("ListObjectPathComponent", current.property_name, next.getText()))
                 i += 2
             else:
                 property_path.append(current)
@@ -237,7 +231,7 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
         # if step.endswith("_ref"):
         #     return stix2.ReferenceObjectPathComponent(step)
         # else:
-        return BasicObjectPathComponent(step)
+        return self.instantiate("BasicObjectPathComponent", step, False)
 
     # Visit a parse tree produced by STIXPatternParser#indexPathStep.
     def visitIndexPathStep(self, ctx):
@@ -255,7 +249,7 @@ class STIXPatternVisitorForSTIX2(STIXPatternVisitor):
             # special case for hashes
             return children[1].value
         else:
-            return BasicObjectPathComponent(children[1].getText(), is_key=True)
+            return self.instantiate("BasicObjectPathComponent", children[1].getText(), True)
 
     # Visit a parse tree produced by STIXPatternParser#setLiteral.
     def visitSetLiteral(self, ctx):

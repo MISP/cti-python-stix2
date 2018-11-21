@@ -34,7 +34,7 @@ def test_boolean_expression_with_parentheses():
             "email-message",
             [
                 stix2.ReferenceObjectPathComponent("from_ref"),
-                stix2.BasicObjectPathComponent("value"),
+                stix2.BasicObjectPathComponent("value", False),
             ],
         ),
         stix2.StringConstant(".+\\@example\\.com$"),
@@ -159,18 +159,18 @@ def test_artifact_payload():
 
 
 def test_greater_than_python_constant():
-    exp1 = stix2.GreaterThanComparisonExpression("file:extensions.windows-pebinary-ext.sections[*].entropy", 7.0)
+    exp1 = stix2.GreaterThanComparisonExpression("file:extensions.'windows-pebinary-ext'.sections[*].entropy", 7.0)
     exp = stix2.ObservationExpression(exp1)
-    assert str(exp) == "[file:extensions.windows-pebinary-ext.sections[*].entropy > 7.0]"
+    assert str(exp) == "[file:extensions.'windows-pebinary-ext'.sections[*].entropy > 7.0]"
 
 
 def test_greater_than():
     exp1 = stix2.GreaterThanComparisonExpression(
-        "file:extensions.windows-pebinary-ext.sections[*].entropy",
+        "file:extensions.'windows-pebinary-ext'.sections[*].entropy",
         stix2.FloatConstant(7.0),
     )
     exp = stix2.ObservationExpression(exp1)
-    assert str(exp) == "[file:extensions.windows-pebinary-ext.sections[*].entropy > 7.0]"
+    assert str(exp) == "[file:extensions.'windows-pebinary-ext'.sections[*].entropy > 7.0]"
 
 
 def test_less_than():
