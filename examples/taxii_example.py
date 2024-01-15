@@ -1,6 +1,6 @@
 from taxii2client.v21 import Collection
 
-import stix2
+import misp_lib_stix2
 
 # This example is based on the medallion server with default_data.json
 # See https://github.com/oasis-open/cti-taxii-server for more information
@@ -13,7 +13,7 @@ def main():
     )
 
     # instantiate TAXII data source
-    taxii = stix2.TAXIICollectionSource(collection)
+    taxii = misp_lib_stix2.TAXIICollectionSource(collection)
 
     # get (url watch indicator)
     indicator_fw = taxii.get("indicator--6770298f-0fd8-471a-ab8c-1c658a46574e")
@@ -27,7 +27,7 @@ def main():
         print(indicator.serialize(indent=4))
 
     # add TAXII filter (ie filter should be passed to TAXII)
-    query_filter = stix2.Filter("type", "in", "malware")
+    query_filter = misp_lib_stix2.Filter("type", "in", "malware")
 
     # query() - but with filter attached. There are no malware objects in this collection
     malwares = taxii.query(query=query_filter)

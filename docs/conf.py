@@ -6,9 +6,9 @@ import sys
 
 from sphinx.ext.autodoc import ClassDocumenter
 
-from stix2.base import _STIXBase
-from stix2.equivalence.object import WEIGHTS
-from stix2.version import __version__
+from misp_lib_stix2.base import _STIXBase
+from misp_lib_stix2.equivalence.object import WEIGHTS
+from misp_lib_stix2.version import __version__
 
 sys.path.insert(0, os.path.abspath('..'))
 
