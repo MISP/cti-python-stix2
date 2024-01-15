@@ -1,0 +1,81 @@
+import datetime as dt
+
+import pytest
+import pytz
+
+import misp_lib_stix2
+
+from .constants import IDENTITY_ID, INTRUSION_SET_ID
+
+EXPECTED = """{
+    "type": "intrusion-set",
+    "spec_version": "2.1",
+    "id": "intrusion-set--4e78f46f-a023-4e5f-bc24-71b3ca22ec29",
+    "created_by_ref": "identity--311b2d2d-f010-4473-83ec-1edf84858f4c",
+    "created": "2016-04-06T20:03:48.000Z",
+    "modified": "2016-04-06T20:03:48.000Z",
+    "name": "Bobcat Breakin",
+    "description": "Incidents usually feature a shared TTP of a bobcat being released...",
+    "aliases": [
+        "Zookeeper"
+    ],
+    "goals": [
+        "acquisition-theft",
+        "harassment",
+        "damage"
+    ]
+}"""
+
+
+def test_intrusion_set_example():
+    intrusion_set = misp_lib_stix2.v21.IntrusionSet(
+        id=INTRUSION_SET_ID,
+        created_by_ref=IDENTITY_ID,
+        created="2016-04-06T20:03:48.000Z",
+        modified="2016-04-06T20:03:48.000Z",
+        name="Bobcat Breakin",
+        description="Incidents usually feature a shared TTP of a bobcat being released...",
+        aliases=["Zookeeper"],
+        goals=["acquisition-theft", "harassment", "damage"],
+    )
+
+    assert intrusion_set.serialize(pretty=True) == EXPECTED
+
+
+@pytest.mark.parametrize(
+    "data", [
+        EXPECTED,
+        {
+            "aliases": [
+                "Zookeeper",
+            ],
+            "created": "2016-04-06T20:03:48.000Z",
+            "created_by_ref": IDENTITY_ID,
+            "description": "Incidents usually feature a shared TTP of a bobcat being released...",
+            "goals": [
+                "acquisition-theft",
+                "harassment",
+                "damage",
+            ],
+            "id": INTRUSION_SET_ID,
+            "modified": "2016-04-06T20:03:48.000Z",
+            "name": "Bobcat Breakin",
+            "spec_version": "2.1",
+            "type": "intrusion-set",
+        },
+    ],
+)
+def test_parse_intrusion_set(data):
+    intset = misp_lib_stix2.parse(data)
+
+    assert intset.type == "intrusion-set"
+    assert intset.spec_version == '2.1'
+    assert intset.id == INTRUSION_SET_ID
+    assert intset.created == dt.datetime(2016, 4, 6, 20, 3, 48, tzinfo=pytz.utc)
+    assert intset.modified == dt.datetime(2016, 4, 6, 20, 3, 48, tzinfo=pytz.utc)
+    assert intset.goals == ["acquisition-theft", "harassment", "damage"]
+    assert intset.aliases == ["Zookeeper"]
+    assert intset.description == "Incidents usually feature a shared TTP of a bobcat being released..."
+    assert intset.name == "Bobcat Breakin"
+
+# TODO: Add other examples
