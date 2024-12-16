@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from codecs import open
+from importlib import metadata
 import os.path
+import sys
 
 from setuptools import find_packages, setup
 
@@ -20,6 +22,13 @@ def get_version():
 def get_long_description():
     with open('README.rst') as f:
         return f.read()
+
+
+try:
+    metadata.version("stix2")
+    sys.exit("Error: 'stix2' is installed. Uninstall it before proceeding.")
+except metadata.PackageNotFoundError:
+    pass
 
 
 setup(
