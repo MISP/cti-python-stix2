@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 from codecs import open
+from importlib import metadata
 import os.path
+import sys
 
 from setuptools import find_packages, setup
 
@@ -22,6 +24,13 @@ def get_long_description():
         return f.read()
 
 
+try:
+    metadata.version("stix2")
+    sys.exit("Error: 'stix2' is installed. Uninstall it before proceeding.")
+except metadata.PackageNotFoundError:
+    pass
+
+
 setup(
     name='misp-lib-stix2',
     version=get_version(),
@@ -38,14 +47,15 @@ setup(
         'Topic :: Security',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ],
     keywords='stix stix2 json cti cyber threat intelligence',
     packages=find_packages(exclude=['*.test', '*.test.*']),
-    python_requires='>=3.7',
+    python_requires='>=3.8',
     install_requires=[
         'pytz',
         'requests',
